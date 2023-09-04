@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: public entry fn
+# key: pef
+# --
+public entry fun $1($0) {}

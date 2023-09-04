@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: use tx_context
+# key: Ut
+# --
+use sui::tx_context::{Self, TxContext};

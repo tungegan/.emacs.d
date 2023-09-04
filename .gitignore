@@ -1,0 +1,14 @@
+session.*
+/auto-save-list/
+/.extension/
+/eln-cache/
+#*#
+*#
+*~
+/straight/
+/.cache/
+bm-repository
+/elpa/
+/recentf
+/tutorial/
+/transient/

@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name:serde 
+# key:ser 
+# --
+#[derive(Deserialize, Serialize)]
+#[serde(crate = "near_sdk::serde")]$0

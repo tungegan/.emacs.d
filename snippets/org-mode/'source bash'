@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: source bash 
+# key: ssh 
+# --
+#+begin_src sh :results output :session share
+$0
+#+end_src

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name:use dynamic field 
+# key:Udf 
+# --
+use sui::dynamic_field as field;

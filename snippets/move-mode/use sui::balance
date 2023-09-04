@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: use sui::balance
+# key: sui::balance
+# --
+sui::balance::{Self, Balance}

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: Use sui
+# key: Uss
+# --
+use sui::sui::SUI;$0

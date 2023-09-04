@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name:use sui full 
+# key:/usui
+# --
+use sui::object::{UID,Self};
+use sui::tx_context::{TxContext,Self};
+use sui::transfer;$0

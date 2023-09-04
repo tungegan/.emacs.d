@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: use balance
+# key: Ub
+# --
+use sui::balance::{Self, Balance};$0

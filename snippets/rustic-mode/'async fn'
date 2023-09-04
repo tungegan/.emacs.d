@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: async fn 
+# key: afn  
+# --
+pub async fn $1() {
+  $0
+}
