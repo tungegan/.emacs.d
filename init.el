@@ -1,50 +1,51 @@
 ;; -*- lexical-binding: t; -*
-  (setq package-archives '(("melpa"  . "https://melpa.org/packages/")
-			   ("gnu"    . "https://elpa.gnu.org/packages/")
-			   ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
+(setq package-archives '(("melpa"  . "https://melpa.org/packages/")
+			 ("gnu"    . "https://elpa.gnu.org/packages/")
+			 ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 
 (setq comp-async-report-warnings-errors nil)
 
-    (defvar native-comp-deferred-compilation-deny-list ())
-    (defvar native-comp-jit-compilation-deny-list ())
-    (defvar bootstrap-version)
-    (defvar comp-deferred-compilation-deny-list ()) ; workaround, otherwise straight shits itself
-    (let ((bootstrap-file
-	   (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-	  (bootstrap-version 5))
-      (unless (file-exists-p bootstrap-file)
-	(with-current-buffer
-	    (url-retrieve-synchronously
-	     "https://raw.git0hubusercontent.com/raxod502/straight.el/develop/install.el"
-	     'silent 'inhibit-cookies)
-	  (goto-char (point-max))
-	  (eval-print-last-sexp)))
-      (load bootstrap-file nil 'nomessage))
+(defvar native-comp-deferred-compilation-deny-list ())
+(defvar native-comp-jit-compilation-deny-list ())
+(defvar bootstrap-version)
+(defvar comp-deferred-compilation-deny-list ()) ; workaround, otherwise straight shits itself
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+	(url-retrieve-synchronously
+	 ;;"https://raw.git0hubusercontent.com/raxod502/straight.el/develop/install.el"
+	 "https://radian-software.github.io/straight.el/install.el"
+	 'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
-  (package-initialize)
-  (unless package-archive-contents
-    (package-refresh-contents))
+(package-initialize)
+(unless package-archive-contents
+  (package-refresh-contents))
 
-   (setq straight-host-usernames
-	'((github . "tungegan")
-	  (gitlab . "tungegan")))
+(setq straight-host-usernames
+      '((github . "tungegan")
+	(gitlab . "tungegan")))
 
-  (setq straight-vc-git-default-remote-name "straight")
+(setq straight-vc-git-default-remote-name "straight")
 
-  (straight-use-package '(use-package :build t))
-  (setq use-package-always-ensure t)
+(straight-use-package '(use-package :build t))
+(setq use-package-always-ensure t)
 
-  (defalias 'yes-or-no-p 'y-or-n-p)
-  (global-auto-revert-mode 1)
+(defalias 'yes-or-no-p 'y-or-n-p)
+(global-auto-revert-mode 1)
 
 (setq-default font-lock-multiline nil)
 
-			    ;;; better defaults
+			       ;;; better defaults
 (set-language-environment "utf-8")
 (set-default-coding-systems 'utf-8)
 (setq default-input-method nil)
 
-			;;; undo
+			   ;;; undo
 (setq undo-limit        10000000 ;; 1mb (default is 160kb)
       undo-strong-limit 100000000 ;; 100mb (default is 240kb)
       undo-outer-limit  1000000000) ;; 1gb (default is 24mb)
@@ -64,8 +65,8 @@
 (use-package catppuccin-theme
   :straight (:build t)
   :ensure t
-  ;config
-  ;(setq catppuccin-flavor 'mocha)) ;; or 'latte, or 'frappe 'macchiato, or 'mocha 
+					;config
+					;(setq catppuccin-flavor 'mocha)) ;; or 'latte, or 'frappe 'macchiato, or 'mocha 
   )
 
 (use-package doom-themes
@@ -73,9 +74,9 @@
   :ensure t
   :config
   (load-theme 'catppuccin t ))
-;(catppuccin-set-color 'base "#0d1117") ;; change base to #000000 for the currently active flavor
-;(catppuccin-set-color 'crust "#222222" 'frappe) ;; change crust to #222222 for frappe
-;(catppuccin-reload)
+					;(catppuccin-set-color 'base "#0d1117") ;; change base to #000000 for the currently active flavor
+					;(catppuccin-set-color 'crust "#222222" 'frappe) ;; change crust to #222222 for frappe
+					;(catppuccin-reload)
 
 (set-face-attribute 'default nil
 		    :font "jetbrains mono"
@@ -98,7 +99,7 @@
 
 (require 'time)
 (setq display-time-format "%y-%b-%d %H:%M")
-(display-time-mode 1) ; display time in modeline
+(display-time-mode 1) 
 
 (use-package doom-modeline
   :straight t
@@ -131,6 +132,9 @@
 (setq evil-insert-state-cursor '((bar . 2) "orange")
       evil-normal-state-cursor '(box "orange"))
 
+
+					; display time in modeline
+
 (use-package rainbow-delimiters
   :straight (:build t)
   :defer t
@@ -149,8 +153,8 @@
       whitespace-action '(cleanup auto-cleanup))
 
 (use-package hydra
-    :straight (:build t)
-    :defer t)
+  :straight (:build t)
+  :defer t)
 (defhydra windows-adjust-size ()
   "
 ^Zoom^                                ^Other
@@ -165,31 +169,31 @@
   ("h" enlarge-window-horizontally))
 
 (use-package evil
-      :straight (:build t)
-      :ensure t
-      :after (general)
-      :init
-      (setq evil-want-integration t
-	    evil-want-keybinding nil
-	    evil-want-C-u-scroll t
-	    evil-want-C-i-jump nil)
-      (require 'evil-vars)
-      (evil-set-undo-system 'undo-tree)
-      :config
-      (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-      (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
-      (evil-global-set-key 'motion "w" 'evil-avy-goto-word-1)
-      (global-set-key (kbd "C-'") #'evil-window-next)
-      (evil-mode 1)
-      (setq evil-want-fine-undo t) ; more granular undo with evil
-      (evil-set-initial-state 'messages-buffer-mode 'normal)
-      (evil-set-initial-state 'dashboard-mode 'normal))
+  :straight (:build t)
+  :ensure t
+  :after (general)
+  :init
+  (setq evil-want-integration t
+	evil-want-keybinding nil
+	evil-want-C-u-scroll t
+	evil-want-C-i-jump nil)
+  (require 'evil-vars)
+  (evil-set-undo-system 'undo-tree)
+  :config
+  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+  (evil-global-set-key 'motion "w" 'evil-avy-goto-word-1)
+  (global-set-key (kbd "C-'") #'evil-window-next)
+  (evil-mode 1)
+  (setq evil-want-fine-undo t) ; more granular undo with evil
+  (evil-set-initial-state 'messages-buffer-mode 'normal)
+  (evil-set-initial-state 'dashboard-mode 'normal))
 
-  (use-package evil-collection
-    :after evil
-    :straight (:build t)
-    :config
-    (evil-collection-init))
+(use-package evil-collection
+  :after evil
+  :straight (:build t)
+  :config
+  (evil-collection-init))
 (use-package evil-org
   :straight (:build t)
   :after (org)
@@ -203,53 +207,53 @@
   (evil-org-set-key-theme '(textobjects navigation calendar additional shift operators))
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys))
-  (defun tx/switch-to-previous-buffer ()
-"Switch to previously open buffer.
+(defun tx/switch-to-previous-buffer ()
+  "Switch to previously open buffer.
     Repeated invocations toggle between the two most recently open buffers."
-(interactive)
-(switch-to-buffer (other-buffer (current-buffer) 1)))
+  (interactive)
+  (switch-to-buffer (other-buffer (current-buffer) 1)))
 
 (use-package bm
-:demand t
-:init
-;; restore on load (even before you require bm)
-(setq bm-restore-repository-on-load t)
+  :demand t
+  :init
+  ;; restore on load (even before you require bm)
+  (setq bm-restore-repository-on-load t)
 
-:config
-;; Allow cross-buffer 'next'
-(setq bm-cycle-all-buffers t
+  :config
+  ;; Allow cross-buffer 'next'
+  (setq bm-cycle-all-buffers t
 
-      ;; where to store persistant files
-      bm-repository-file "~/.emacs.d/bm-repository")
+	;; where to store persistant files
+	bm-repository-file "~/.emacs.d/bm-repository")
 
-;; save bookmarks
-(setq-default bm-buffer-persistence t)
+  ;; save bookmarks
+  (setq-default bm-buffer-persistence t)
 
-;; Loading the repository from file when on start up.
-(add-hook 'after-init-hook 'bm-repository-load)
+  ;; Loading the repository from file when on start up.
+  (add-hook 'after-init-hook 'bm-repository-load)
 
-;; Saving bookmarks
-(add-hook 'kill-buffer-hook #'bm-buffer-save)
+  ;; Saving bookmarks
+  (add-hook 'kill-buffer-hook #'bm-buffer-save)
 
-;; must save all bookmarks first.
-(add-hook 'kill-emacs-hook #'(lambda nil
-                               (bm-buffer-save-all)
-                               (bm-repository-save)))
+  ;; must save all bookmarks first.
+  (add-hook 'kill-emacs-hook #'(lambda nil
+				 (bm-buffer-save-all)
+				 (bm-repository-save)))
 
-(add-hook 'after-save-hook #'bm-buffer-save)
+  (add-hook 'after-save-hook #'bm-buffer-save)
 
-;; Restoring bookmarks
-(add-hook 'find-file-hooks   #'bm-buffer-restore)
-(add-hook 'after-revert-hook #'bm-buffer-restore)
+  ;; Restoring bookmarks
+  (add-hook 'find-file-hooks   #'bm-buffer-restore)
+  (add-hook 'after-revert-hook #'bm-buffer-restore)
 
-(add-hook 'vc-before-checkin-hook #'bm-buffer-save)
+  (add-hook 'vc-before-checkin-hook #'bm-buffer-save)
 
-;; key binding
-:bind (("C-4" . bm-toggle)
-       ("C-5" . bm-lifo-next)
-       ("C-8" . bm-lifo-previous)
-       ("C-1" . bm-show-all))
-)
+  ;; key binding
+  :bind (("C-4" . bm-toggle)
+	 ("C-5" . bm-lifo-next)
+	 ("C-8" . bm-lifo-previous)
+	 ("C-1" . bm-show-all))
+  )
 
 (use-package general
   :straight (:build t)
@@ -273,9 +277,9 @@
     :global-prefix "M-m"))
 
 (use-package ripgrep
-    :if (executable-find "rg")
-    :straight (:build t)
-    :defer t)
+  :if (executable-find "rg")
+  :straight (:build t)
+  :defer t)
 (use-package projectile
   :straight (:build t)
   :diminish projectile-mode
@@ -290,9 +294,9 @@
   (tx/leader-key
     "p" '(:keymap projectile-command-map :which-key "projectile")))
 (use-package counsel-projectile
-:straight (:build t)
-:after (counsel projectile)
-:config (counsel-projectile-mode))
+  :straight (:build t)
+  :after (counsel projectile)
+  :config (counsel-projectile-mode))
 
 (use-package undo-tree
   :defer t
@@ -304,17 +308,17 @@
   :init
   (global-undo-tree-mode)
   :config
-    (setq undo-tree-visualizer-diff       t
-      undo-tree-auto-save-history     t
-      undo-tree-enable-undo-in-region t
-      undo-limit        (* 800 1024)
-      undo-strong-limit (* 12 1024 1024)
-      undo-outer-limit  (* 128 1024 1024)))
+  (setq undo-tree-visualizer-diff       t
+	undo-tree-auto-save-history     t
+	undo-tree-enable-undo-in-region t
+	undo-limit        (* 800 1024)
+	undo-strong-limit (* 12 1024 1024)
+	undo-outer-limit  (* 128 1024 1024)))
 
 (use-package bufler
   :straight (:build t)
   :bind (("C-M-j" . bufler-switch-buffer)
-         ("C-M-k" . bufler-workspace-frame-set))
+	 ("C-M-k" . bufler-workspace-frame-set))
   :config
   (evil-collection-define-key 'normal 'bufler-list-mode-map
     (kbd "RET")   'bufler-list-buffer-switch
@@ -322,42 +326,42 @@
     "D"           'bufler-list-buffer-kill)
 
   (setf bufler-groups
-        (bufler-defgroups
-          ;; Subgroup collecting all named workspaces.
-          (group (auto-workspace))
-          ;; Subgroup collecting buffers in a projectile project.
-          (group (auto-projectile))
-          ;; Grouping browser windows
-          (group
-           (group-or "Browsers"
-                     (name-match "Vimb" (rx bos "vimb"))
-                     (name-match "Qutebrowser" (rx bos "Qutebrowser"))
-                     (name-match "Chromium" (rx bos "Chromium"))))
-          (group
-           (group-or "Chat"
-                     (mode-match "Telega" (rx bos "telega-"))))
-          (group
-           ;; Subgroup collecting all `help-mode' and `info-mode' buffers.
-           (group-or "Help/Info"
-                     (mode-match "*Help*" (rx bos (or "help-" "helpful-")))
-                     ;; (mode-match "*Helpful*" (rx bos "helpful-"))
-                     (mode-match "*Info*" (rx bos "info-"))))
-          (group
-           ;; Subgroup collecting all special buffers (i.e. ones that are not
-           ;; file-backed), except `magit-status-mode' buffers (which are allowed to fall
-           ;; through to other groups, so they end up grouped with their project buffers).
-           (group-and "*Special*"
-                      (name-match "**Special**"
-                                  (rx bos "*" (or "Messages" "Warnings" "scratch" "Backtrace" "Pinentry") "*"))
-                      (lambda (buffer)
-                        (unless (or (funcall (mode-match "Magit" (rx bos "magit-status"))
-                                             buffer)
-                                    (funcall (mode-match "Dired" (rx bos "dired"))
-                                             buffer)
-                                    (funcall (auto-file) buffer))
-                          "*Special*"))))
-          ;; Group remaining buffers by major mode.
-          (auto-mode))))
+	(bufler-defgroups
+	  ;; Subgroup collecting all named workspaces.
+	  (group (auto-workspace))
+	  ;; Subgroup collecting buffers in a projectile project.
+	  (group (auto-projectile))
+	  ;; Grouping browser windows
+	  (group
+	   (group-or "Browsers"
+		     (name-match "Vimb" (rx bos "vimb"))
+		     (name-match "Qutebrowser" (rx bos "Qutebrowser"))
+		     (name-match "Chromium" (rx bos "Chromium"))))
+	  (group
+	   (group-or "Chat"
+		     (mode-match "Telega" (rx bos "telega-"))))
+	  (group
+	   ;; Subgroup collecting all `help-mode' and `info-mode' buffers.
+	   (group-or "Help/Info"
+		     (mode-match "*Help*" (rx bos (or "help-" "helpful-")))
+		     ;; (mode-match "*Helpful*" (rx bos "helpful-"))
+		     (mode-match "*Info*" (rx bos "info-"))))
+	  (group
+	   ;; Subgroup collecting all special buffers (i.e. ones that are not
+	   ;; file-backed), except `magit-status-mode' buffers (which are allowed to fall
+	   ;; through to other groups, so they end up grouped with their project buffers).
+	   (group-and "*Special*"
+		      (name-match "**Special**"
+				  (rx bos "*" (or "Messages" "Warnings" "scratch" "Backtrace" "Pinentry") "*"))
+		      (lambda (buffer)
+			(unless (or (funcall (mode-match "Magit" (rx bos "magit-status"))
+					     buffer)
+				    (funcall (mode-match "Dired" (rx bos "dired"))
+					     buffer)
+				    (funcall (auto-file) buffer))
+			  "*Special*"))))
+	  ;; Group remaining buffers by major mode.
+	  (auto-mode))))
 
 (use-package flycheck
   :straight (:build t)
@@ -443,10 +447,10 @@
     ("T" maple-iedit-skip-and-match-previous "skip and previous")
     ("p" maple-iedit-match-previous "prev"))
   :bind (:map evil-visual-state-map
-              ("n" . maple/iedit/body)
-              ;; ("C-n" . maple-iedit-match-next)
-              ;; ("C-p" . maple-iedit-match-previous)
-              ("C-t" . maple-iedit-skip-and-match-next)))
+	      ("n" . maple/iedit/body)
+	      ;; ("C-n" . maple-iedit-match-next)
+	      ;; ("C-p" . maple-iedit-match-previous)
+	      ("C-t" . maple-iedit-skip-and-match-next)))
 
 (use-package hideshow
   :hook
@@ -473,19 +477,19 @@
 	  ('hs-cycle-subtree
 	   (hs-hide-block))
 	  (_
-	       (hs-hide-block)
-	     (hs-hide-level 1)
-	     (setq this-command 'hs-cycle-children)))
+	   (hs-hide-block)
+	   (hs-hide-level 1)
+	   (setq this-command 'hs-cycle-children)))
       (hs-hide-level level)
       (setq this-command 'hs-hide-level))))
 
 (defun hs-global-cycle ()
-    (interactive)
-    (pcase last-command
-      ('hs-global-cycle
-       (save-excursion (hs-show-all))
-       (setq this-command 'hs-global-show))
-      (_ (hs-hide-all))))
+  (interactive)
+  (pcase last-command
+    ('hs-global-cycle
+     (save-excursion (hs-show-all))
+     (setq this-command 'hs-global-show))
+    (_ (hs-hide-all))))
 
 (use-package move-text
   :straight (:build t))
@@ -494,18 +498,18 @@
 (global-set-key (kbd "s-k") #'move-text-up)
 
 (use-package popwin
-    :straight t)
+  :straight t)
 (use-package vterm
   :defer t
   :straight t
   :general
   (tx/leader-key
-   "ot" '(+popwin:vterm :which-key "vTerm popup")
-   "oT" '(vterm :which-key "vTerm"))
-  ;:preface
-  ;(when noninteractive
-    ;(advice-add #'vterm-module-compile :override #'ignore)
-    ;(provide 'vterm-module))
+    "ot" '(+popwin:vterm :which-key "vTerm popup")
+    "oT" '(vterm :which-key "vTerm"))
+					;:preface
+					;(when noninteractive
+					;(advice-add #'vterm-module-compile :override #'ignore)
+					;(provide 'vterm-module))
   :custom
   (vterm-max-scrollback 5000)
   :config
@@ -521,17 +525,17 @@
 	     (call-interactively 'vterm)))
        :default-config-keywords '(:position :bottom :height 8)))))  
 
-  (use-package multi-vterm
-    :after vterm
-    :defer t
-    :straight (:build t)
-    :general
-    (tx/major-leader-key
-      :packages '(vterm multi-vterm)
-      :keymap 'vterm-mode-map
-      "c" #'multi-vterm
-      "j" #'multi-vterm-next
-      "k" #'multi-vterm-prev))
+(use-package multi-vterm
+  :after vterm
+  :defer t
+  :straight (:build t)
+  :general
+  (tx/major-leader-key
+    :packages '(vterm multi-vterm)
+    :keymap 'vterm-mode-map
+    "c" #'multi-vterm
+    "j" #'multi-vterm-next
+    "k" #'multi-vterm-prev))
 
 (use-package which-key
   :straight (:build t)
@@ -558,14 +562,14 @@
   ([remap describe-key]      . helpful-key))
 
 (use-package org
-     :defer t
-     :config
-     (require 'org-protocol)
-    (org-babel-do-load-languages
-      'org-babel-load-languages
-	 '((shell . t)
-	   (rust . t)))
-     )
+  :defer t
+  :config
+  (require 'org-protocol)
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((shell . t)
+     (rust . t)))
+  )
 
 
 
@@ -577,7 +581,7 @@
   :config
   (setq company-minimum-prefix-length     2
 	company-toolsip-limit             14
-        company-idle-dalay                0.2
+	company-idle-dalay                0.2
 	company-tooltip-align-annotations t
 	company-require-match             'never
 	company-global-modes              '(not erc-mode message-mode help-mode gud-mode)
@@ -596,43 +600,43 @@
   :defer t
   :diminish
   :bind (("C-s" . swiper)
-         :map ivy-minibuffer-map
-         ("TAB" . ivy-alt-done)
-         ("C-l" . ivy-alt-done)
-         ("C-j" . ivy-next-line)
-         ("C-k" . ivy-previous-line)
-         ("C-u" . ivy-scroll-up-command)
-         ("C-d" . ivy-scroll-down-command)
-         :map ivy-switch-buffer-map
-         ("C-j" . ivy-next-line)
-         ("C-k" . ivy-previous-line)
-         ("C-l" . ivy-done)
-         ("C-d" . ivy-switch-buffer-kill)
-         :map ivy-reverse-i-search-map
-         ("C-j" . ivy-next-line)
-         ("C-k" . ivy-previous-line)
-         ("C-d" . ivy-reverse-i-search-kill))
+	 :map ivy-minibuffer-map
+	 ("TAB" . ivy-alt-done)
+	 ("C-l" . ivy-alt-done)
+	 ("C-j" . ivy-next-line)
+	 ("C-k" . ivy-previous-line)
+	 ("C-u" . ivy-scroll-up-command)
+	 ("C-d" . ivy-scroll-down-command)
+	 :map ivy-switch-buffer-map
+	 ("C-j" . ivy-next-line)
+	 ("C-k" . ivy-previous-line)
+	 ("C-l" . ivy-done)
+	 ("C-d" . ivy-switch-buffer-kill)
+	 :map ivy-reverse-i-search-map
+	 ("C-j" . ivy-next-line)
+	 ("C-k" . ivy-previous-line)
+	 ("C-d" . ivy-reverse-i-search-kill))
   :config
   (ivy-mode 1)
   (setq ivy-wrap                        t
-        ivy-height                      17
-        ivy-sort-max-size               50000
-        ivy-fixed-height-minibuffer     t
-        ivy-read-action-functions       #'ivy-hydra-read-action
-        ivy-read-action-format-function #'ivy-read-action-format-columns
-        projectile-completion-system    'ivy
-        ivy-on-del-error-function       #'ignore
-        ivy-use-selectable-prompt       t))
+	ivy-height                      17
+	ivy-sort-max-size               50000
+	ivy-fixed-height-minibuffer     t
+	ivy-read-action-functions       #'ivy-hydra-read-action
+	ivy-read-action-format-function #'ivy-read-action-format-columns
+	projectile-completion-system    'ivy
+	ivy-on-del-error-function       #'ignore
+	ivy-use-selectable-prompt       t))
 
 (use-package counsel
   :straight t
   :after recentf
   :after ivy
   :bind (("M-x"     . counsel-M-x)
-         ("C-x b"   . counsel-ibuffer)
-         ("C-x C-f" . counsel-find-file)
-         :map minibuffer-local-map
-         ("C-r" . 'counsel-minibuffer-history)))
+	 ("C-x b"   . counsel-ibuffer)
+	 ("C-x C-f" . counsel-find-file)
+	 :map minibuffer-local-map
+	 ("C-r" . 'counsel-minibuffer-history)))
 
 (use-package yasnippet
   :defer t
@@ -645,14 +649,14 @@
   :after yasnippet
   :straight (:build t))
 (use-package ivy-yasnippet
-:defer t
-:after (ivy yasnippet)
-:straight (:build t)
-:general
-(tx/leader-key
-  :infix "i"
-  :packages 'ivy-yasnippet
-  "y" #'ivy-yasnippet))
+  :defer t
+  :after (ivy yasnippet)
+  :straight (:build t)
+  :general
+  (tx/leader-key
+    :infix "i"
+    :packages 'ivy-yasnippet
+    "y" #'ivy-yasnippet))
 
 (tx/evil
   ;;:packages '(counsel)
@@ -885,51 +889,51 @@
 
 
   "fc"  '((lambda ()
-            (interactive)
-            (find-file "~/.emacs.d/eamon.org"))
-          wk "emacs.org")
+	    (interactive)
+	    (find-file "~/.emacs.d/eamon.org"))
+	  wk "emacs.org")
 
   "fi"  '((lambda ()
-            (interactive)
-            (find-file (concat user-emacs-directory "init.el")))
-          :which-key "init.el")
+	    (interactive)
+	    (find-file (concat user-emacs-directory "init.el")))
+	  :which-key "init.el")
 
   "fR"  '((lambda ()
-            (interactive)
-            (counsel-find-file ""
-                               (concat user-emacs-directory
-                                       (file-name-as-directory "straight")
-                                       (file-name-as-directory "repos"))))
-          :which-key "straight package")
+	    (interactive)
+	    (counsel-find-file ""
+			       (concat user-emacs-directory
+				       (file-name-as-directory "straight")
+				       (file-name-as-directory "repos"))))
+	  :which-key "straight package")
 
   "owg"  '((lambda ()
-             (interactive)
-             (browse-url "https://github.com/eamondang"))
-           :wk "My Github")
+	     (interactive)
+	     (browse-url "https://github.com/eamondang"))
+	   :wk "My Github")
 
   "owe"  '((lambda ()
-             (interactive)
-             (browse-url "https://remix.ethereum.org/"))
-           :wk "Remix IDE")
+	     (interactive)
+	     (browse-url "https://remix.ethereum.org/"))
+	   :wk "Remix IDE")
 
   "owr"  '((lambda ()
-             (interactive)
-             (browse-url "https://reddit.com/"))
-           :wk "Reddit")
+	     (interactive)
+	     (browse-url "https://reddit.com/"))
+	   :wk "Reddit")
 
   "owc"  '((lambda ()
-             (interactive)
-             (browse-url "https://calendar.google.com/calendar/u/0/r?pli=1"))
-           :wk "My Calender")
+	     (interactive)
+	     (browse-url "https://calendar.google.com/calendar/u/0/r?pli=1"))
+	   :wk "My Calender")
 
   "owwc"  '((lambda ()
-              (interactive)
-              (browse-url "https://chat.openai.com"))
-              :wk "Chat GPT"))
+	      (interactive)
+	      (browse-url "https://chat.openai.com"))
+	    :wk "Chat GPT"))
 
 (use-package all-the-icons
-:defer t
-:straight t)
+  :defer t
+  :straight t)
 
 (use-package lsp-mode
   :defer t
@@ -941,14 +945,14 @@
   :hook (;(c-mode          . lsp-deferred)
 					;(c++-mode        . lsp-deferred)
 					;(html-mode       . lsp-deferred)
-	 (sh-mode         . lsp-deferred)
-	 (rustic-mode     . lsp-deferred)
+	 ;;(sh-mode         . lsp-deferred)
+	 ;;(rustic-mode     . lsp-deferred)
 					;(go-mode         . lsp-deferred)
 	 ;; (text-mode       . lsp-deferred)
-	 (move-mode       . lsp-deferred)
-	 (toml-mode       . lsp-deferred)
-	 (sql-mode       . lsp-deferred)
-	 (json-mode       . lsp-deferred)
+	 ;;(move-mode       . lsp-deferred)
+	 ;;(toml-mode       . lsp-deferred)
+	 ;;(sql-mode       . lsp-deferred)
+	 ;;(json-mode       . lsp-deferred)
 					;(typescript-mode . lsp-deferred)
 	 (lsp-mode        . lsp-enable-which-key-integration)
 	 (lsp-mode        . lsp-ui-mode))
@@ -1076,7 +1080,7 @@
 					    (+dap-running-session-mode 1))))
 
 (use-package move-mode
-    :straight (:build t :host github :repo "amnn/move-mode" :branch "main"))
+  :straight (:build t :host github :repo "amnn/move-mode" :branch "main"))
 
 (add-hook 'move-mode-hook #'eglot-ensure)
 ;;(add-to-list 'eglot-server-programs '(move-mode "move-analyzer"))
@@ -1101,88 +1105,89 @@
     :server-id 'move-analyzer)))
 
 (use-package eglot
-:straight t
-:ensure t
-:config
-(add-hook 'move-mode-hook #'eglot-ensure)
-(add-to-list 'eglot-server-programs '(move-mode "move-analyzer"))
-)
+  :straight t
+  :ensure t
+  :config
+  (add-hook 'move-mode-hook #'eglot-ensure)
+  (add-to-list 'eglot-server-programs '(move-mode "move-analyzer"))
+  )
 
-  (use-package rustic
-    :defer t
-    :straight (:build t)
-    :mode ("\\.rs\\'" . rustic-mode)
-    :hook (rustic-mode-local-vars . rustic-setup-lsp)
-    :hook (rustic-mode . lsp-deferred)
-    :hook (rustic-mode . eglot-ensure)
-    :init
-    (with-eval-after-load 'org
-      (defalias 'org-babel-execute:rust #'org-babel-execute:rustic)
-      (add-to-list 'org-src-lang-modes '("rust" . rustic)))
-    (setq rustic-lsp-client 'lsp-mode)
-    (add-hook 'rustic-mode-hook #'tree-sitter-hl-mode)
-    (add-hook 'rust-mode-hook
+(use-package rustic
+  :defer t
+  :straight (:build t)
+  :mode ("\\.rs\\'" . rustic-mode)
+  :hook (rustic-mode-local-vars . rustic-setup-lsp)
+  :hook (rustic-mode . lsp-deferred)
+  :hook (rustic-mode . eglot-ensure)
+  :init
+  (with-eval-after-load 'org
+    (defalias 'org-babel-execute:rust #'org-babel-execute:rustic)
+    (add-to-list 'org-src-lang-modes '("rust" . rustic)))
+  ;;(setq rustic-lsp-client 'lsp-mode)
+  (setq rustic-lsp-client 'eglot)
+  (add-hook 'rustic-mode-hook #'tree-sitter-hl-mode)
+  (add-hook 'rust-mode-hook
 	    (lambda ()
 	      (setq indent-tabs-mode nil)
 	      (setq tab-width 2)
 	      (setq rust-indent-offset 2)))
-    :general
-    (general-define-key
-     :keymaps 'rustic-mode-map
-     :packages 'lsp
-     "M-t" #'lsp-ui-imenu
-     "M-?" #'lsp-find-references)
-    (tx/major-leader-key
-      :keymaps 'rustic-mode-map
-      :packages 'rustic
-      "b"  '(:ignore t :which-key "build")
-      "bB" #'rustic-cargo-build
-      "bB" #'rustic-cargo-bench
-      "bc" #'rustic-cargo-check
-      "bC" #'rustic-cargo-clippy
-      "bn" #'rustic-cargo-new
-      "bo" #'rustic-cargo-outdated
-      "d" '(:ignore t :which-key "Debugging")
-      "dr" #'dap-debug
-      "dh" #'dap-hydra
-      "dl" #'dap-debug-last
-      "dR" #'dap-debug-restart
-      "dq" #'dap-disconnect
-      "da" #'dap-breakpoint-add
-      "dt" #'dap-breakpoint-toggle
-      "dd" #'dap-breakpoint-delete
-      "dD" #'dap-breakpoint-delete-all
-      "D" #'rustic-cargo-doc
-      "f" #'rustic-cargo-fmt
-      "a" #'rustic-cargo-add
-      "r" #'rustic-cargo-run
-      "cf" #'rustic-cargo-clippy-fix
-      "cr" #'rustic-cargo-clippy-run
-      "cc" #'rustic-cargo-clippy
-      "l"  '(:ignore t :which-key "lsp")
-      "la" #'lsp-execute-code-action
-      "lr" #'lsp-rename
-      "lq" #'lsp-workspace-restart
-      "lQ" #'lsp-workspace-shutdown
-      "ls" #'lsp-rust-analyzer-status
-      "T" #'rustic-cargo-test
-      "t" #'rustic-cargo-current-test)
-    :config
-    (setq rustic-indent-method-chain    t
-	  rustic-babel-format-src-block nil
-	  rustic-format-trigger         nil)
-    (remove-hook 'rustic-mode-hook #'flycheck-mode)
-    (remove-hook 'rustic-mode-hook #'flymake-mode-off)
-    (remove-hook 'rustic-mode-hook #'rustic-setup-lsp))
-  ;; Use Rustfmt for formatting Rust code in Rustic mode
-  (setq rustic-format-on-save t)
-  (setq rustic-format-display-method 'echo)
-  (setq rustic-format-trigger 'on-save)
-  (setq rustic-lsp-server 'rust-analyzer)
-  (setq rustic-lsp-format t)
-  (setq rustic-lsp-client nil)
-  (setq rustic-rustfmt-bin (executable-find "rustfmt"))
-  (setq rustic-rustfmt-config "~/.rustfmt.toml")
+  :general
+  (general-define-key
+   :keymaps 'rustic-mode-map
+   :packages 'lsp
+   "M-t" #'lsp-ui-imenu
+   "M-?" #'lsp-find-references)
+  (tx/major-leader-key
+    :keymaps 'rustic-mode-map
+    :packages 'rustic
+    "b"  '(:ignore t :which-key "build")
+    "bB" #'rustic-cargo-build
+    "bB" #'rustic-cargo-bench
+    "bc" #'rustic-cargo-check
+    "bC" #'rustic-cargo-clippy
+    "bn" #'rustic-cargo-new
+    "bo" #'rustic-cargo-outdated
+    "d" '(:ignore t :which-key "Debugging")
+    "dr" #'dap-debug
+    "dh" #'dap-hydra
+    "dl" #'dap-debug-last
+    "dR" #'dap-debug-restart
+    "dq" #'dap-disconnect
+    "da" #'dap-breakpoint-add
+    "dt" #'dap-breakpoint-toggle
+    "dd" #'dap-breakpoint-delete
+    "dD" #'dap-breakpoint-delete-all
+    "D" #'rustic-cargo-doc
+    "f" #'rustic-cargo-fmt
+    "a" #'rustic-cargo-add
+    "r" #'rustic-cargo-run
+    "cf" #'rustic-cargo-clippy-fix
+    "cr" #'rustic-cargo-clippy-run
+    "cc" #'rustic-cargo-clippy
+    "l"  '(:ignore t :which-key "lsp")
+    "la" #'lsp-execute-code-action
+    "lr" #'lsp-rename
+    "lq" #'lsp-workspace-restart
+    "lQ" #'lsp-workspace-shutdown
+    "ls" #'lsp-rust-analyzer-status
+    "T" #'rustic-cargo-test
+    "t" #'rustic-cargo-current-test)
+  :config
+  (setq rustic-indent-method-chain    t
+	rustic-babel-format-src-block nil
+	rustic-format-trigger         nil)
+  (remove-hook 'rustic-mode-hook #'flycheck-mode)
+  (remove-hook 'rustic-mode-hook #'flymake-mode-off)
+  (remove-hook 'rustic-mode-hook #'rustic-setup-lsp))
+;; Use Rustfmt for formatting Rust code in Rustic mode
+(setq rustic-format-on-save t)
+(setq rustic-format-display-method 'echo)
+(setq rustic-format-trigger 'on-save)
+(setq rustic-lsp-server 'rust-analyzer)
+(setq rustic-lsp-format t)
+(setq rustic-lsp-client nil)
+(setq rustic-rustfmt-bin (executable-find "rustfmt"))
+(setq rustic-rustfmt-config "~/.rustfmt.toml")
 
 ;; (use-package parinfer-rust-mode
 ;;   :defer t
@@ -1215,58 +1220,58 @@
 (require 'screenshot)
 
 (use-package engine-mode
-:config
-(engine/set-keymap-prefix (kbd "C-c s"))
-;;(setq browse-url-browser-function 'browse-url-default-macosx-browser
-;;      engine/browser-function 'browse-url-default-macosx-browser)
-;;(setq engine/browser-function 'eww-browse-url)
-(setq browse-url-browser-function 'browse-url-default-browser)
-(defengine duckduckgo
-  "https://duckduckgo.com/?q=%s"
-  :keybinding "d")
+  :config
+  (engine/set-keymap-prefix (kbd "C-c s"))
+  ;;(setq browse-url-browser-function 'browse-url-default-macosx-browser
+  ;;      engine/browser-function 'browse-url-default-macosx-browser)
+  ;;(setq engine/browser-function 'eww-browse-url)
+  (setq browse-url-browser-function 'browse-url-default-browser)
+  (defengine duckduckgo
+    "https://duckduckgo.com/?q=%s"
+    :keybinding "d")
 
-(defengine github
-  "https://github.com/search?ref=simplesearch&q=%s"
-  :keybinding "1")
+  (defengine github
+    "https://github.com/search?ref=simplesearch&q=%s"
+    :keybinding "1")
 
-(defengine gitlab
-  "https://gitlab.com/search?search=%s&group_id=&project_id=&snippets=false&repository_ref=&nav_source=navbar"
-  :keybinding "2")
+  (defengine gitlab
+    "https://gitlab.com/search?search=%s&group_id=&project_id=&snippets=false&repository_ref=&nav_source=navbar"
+    :keybinding "2")
 
-(defengine stack-overflow
-  "https://stackoverflow.com/search?q=%s"
-  :keybinding "s")
+  (defengine stack-overflow
+    "https://stackoverflow.com/search?q=%s"
+    :keybinding "s")
 
-(defengine npm
-  "https://www.npmjs.com/search?q=%s"
-  :keybinding "n")
+  (defengine npm
+    "https://www.npmjs.com/search?q=%s"
+    :keybinding "n")
 
-(defengine crates
-  "https://crates.io/search?q=%s"
-  :keybinding "c")
+  (defengine crates
+    "https://crates.io/search?q=%s"
+    :keybinding "c")
 
-(defengine localhost
-  "http://localhost:%s"
-  :keybinding "l")
+  (defengine localhost
+    "http://localhost:%s"
+    :keybinding "l")
 
-(defengine vocabulary
-  ;; "https://dictionary.cambridge.org/dictionary/english/%s"
-  "https://www.vocabulary.com/dictionary/%s"
-  :keybinding "t")
+  (defengine vocabulary
+    ;; "https://dictionary.cambridge.org/dictionary/english/%s"
+    "https://www.vocabulary.com/dictionary/%s"
+    :keybinding "t")
 
-(defengine translate
-  "https://translate.google.com/?hl=vi&sl=en&tl=vi&text=%s&op=translate"
-  :keybinding "T")
+  (defengine translate
+    "https://translate.google.com/?hl=vi&sl=en&tl=vi&text=%s&op=translate"
+    :keybinding "T")
 
-(defengine youtube
-  "http://www.youtube.com/results?aq=f&oq=&search_query=%s"
-  :keybinding "y")
+  (defengine youtube
+    "http://www.youtube.com/results?aq=f&oq=&search_query=%s"
+    :keybinding "y")
 
-(defengine google
-  "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
-  :keybinding "g")
+  (defengine google
+    "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
+    :keybinding "g")
 
-(engine-mode 1))
+  (engine-mode 1))
 
 (setenv  "SHELL" "/bin/zsh")
 
