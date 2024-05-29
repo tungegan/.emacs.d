@@ -390,6 +390,29 @@ The return value of `csetq' is the value of the last VAL.
   (doom-themes-neotree-config)
   (doom-themes-org-config))
 
+;; (use-package doom-modeline
+;;   :straight t
+;;   :custom
+;;   (doom-modeline-height 35)
+;;   (doom-modeline-bar-width 8)
+;;   (doom-modeline-time-icon nil)
+;;   (doom-modeline-buffer-encoding 'nondefault)
+;;   (doom-modeline-unicode-fallback t)
+;;   :config
+;;   ;; FIX Add some padding to the right
+;;   (doom-modeline-def-modeline 'main
+;;     '(bar workspace-name window-number modals matches follow buffer-info
+;;       remote-host buffer-position word-count parrot selection-info)
+;;     '(objed-state misc-info persp-name battery grip irc mu4e gnus github debug
+;;       repl lsp minor-modes input-method indent-info buffer-encoding major-mode
+;;       process vcs checker time "   ")))
+;; (setq evil-normal-state-tag   (propertize "[NORMAL]" 'face '((:background "lightgreen" :foreground "black")))
+;;       evil-emacs-state-tag    (propertize "[EMACS]" 'face '((:background "yellow" :foreground "black")))
+;;       evil-insert-state-tag   (propertize "[INSERT]" 'face '((:background "red") :foreground "white"))
+;;       evil-motion-state-tag   (propertize "[MOTION]" 'face '((:background "blue") :foreground "white"))
+;;       evil-visual-state-tag   (propertize "[VISUAL]" 'face '((:background "orange" :foreground "black")))
+;;       evil-operator-state-tag (propertize "[OPERATOR]" 'face '((:background "purple"))))
+
 (use-package doom-modeline
   :straight t
   :custom
@@ -399,13 +422,14 @@ The return value of `csetq' is the value of the last VAL.
   (doom-modeline-buffer-encoding 'nondefault)
   (doom-modeline-unicode-fallback t)
   :config
-  ;; FIX Add some padding to the right
+  ;; Define the modeline without the `checker` segment
   (doom-modeline-def-modeline 'main
     '(bar workspace-name window-number modals matches follow buffer-info
       remote-host buffer-position word-count parrot selection-info)
     '(objed-state misc-info persp-name battery grip irc mu4e gnus github debug
       repl lsp minor-modes input-method indent-info buffer-encoding major-mode
-      process vcs checker time "   ")))
+      process vcs time "   ")))
+
 (setq evil-normal-state-tag   (propertize "[NORMAL]" 'face '((:background "lightgreen" :foreground "black")))
       evil-emacs-state-tag    (propertize "[EMACS]" 'face '((:background "yellow" :foreground "black")))
       evil-insert-state-tag   (propertize "[INSERT]" 'face '((:background "red") :foreground "white"))
@@ -595,6 +619,7 @@ With a prefix argument, TRASH is nil."
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
   (evil-global-set-key 'motion "w" 'evil-avy-goto-word-1)
+  ;;(global-set-key (kbd "s-'") #'evil-window-next)
   (global-set-key (kbd "s-'") #'evil-window-next)
   
   (general-define-key
@@ -3664,9 +3689,19 @@ Spell Commands^^           Add To Dictionary^^              Other
 (use-package go-mode
   :straight (:build t)
   :defer t
+  :mode ("\\.go\\'" . go-mode)
   :config
-  (add-hook 'before-save-hook #'gofmt-before-save)
-  :mode ("\\.go\\'" . go-mode))
+  (add-hook 'before-save-hook #'gofmt-before-save))
+
+;; (use-package go-mode
+;;   :straight (:build t)
+;;   :defer t
+;;   :mode ("\\.go\\'" . go-mode)
+;;   :hook (go-mode . lsp-deferred)
+;;   :hook (go-mode . company-mode)
+;;   :config
+;;   (require 'lsp-go)
+;;   (add-hook 'before-save-hook #'gofmt-before-save))
 
 (use-package go-snippets
   :defer t)
@@ -3700,6 +3735,9 @@ Spell Commands^^           Add To Dictionary^^              Other
 (defun eglot-format-buffer-on-save ()
   (add-hook 'before-save-hook #'eglot-format-buffer -10 t))
 (add-hook 'go-mode-hook #'eglot-format-buffer-on-save)
+
+;; (setq lsp-go-analyses '((shadow . t)
+;;                         (simplifycompositelit . :json-false)))
 
 (defun my/local-tab-indent ()
   (setq-local indent-tabs-mode 1))
@@ -4069,12 +4107,3 @@ Spell Commands^^           Add To Dictionary^^              Other
   "dC" '(docker-containers :which-key "Docker Containers")
   "dN" '(docker-networks :which-key "Docker Networks")
 )
-
-(use-package lsp-grammarly
-  :straight (:build t))
-  ;; :ensure nil
-  ;; :hook (text-mode . (lambda ()
-  ;;                      (require 'lsp-grammarly)
-  ;;                      (lsp-deferred))))  ; or lsp-deferred
-
-(add-to-list 'auto-mode-alist '("\\.mdx\\'" . markdown-mode))
