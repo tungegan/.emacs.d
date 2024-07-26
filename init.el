@@ -2897,6 +2897,9 @@ Spell Commands^^           Add To Dictionary^^              Other
          (rustic-mode         . lsp-deferred)
          (go-mode             . lsp-deferred)
          (move-mode           . lsp-deferred)
+         ;;(move-mode           . (lambda ()
+         ;;                (setq-local lsp-enabled-clients '(semgrep-ls))
+         ;;                (lsp-deferred)))
          (toml-mode           . lsp-deferred)
          (toml-ts-mode        . lsp-deferred)
          (sql-mode            . lsp-deferred)
@@ -3608,9 +3611,9 @@ Spell Commands^^           Add To Dictionary^^              Other
   :defer t
   :straight (:build t)
   :hook (typescript-mode     . rainbow-delimiters-mode)
-  :hook (typescript-mode     . lsp-deferred)
+  ;;:hook (typescript-mode     . lsp-deferred)
   :hook (typescript-mode     . prettier-js-mode)
-  :hook (typescript-tsx-mode . lsp-deferred)
+  ;;:hook (typescript-tsx-mode . lsp-deferred)
   :hook (typescript-tsx-mode . rainbow-delimiters-mode)
   :hook (typescript-tsx-mode . prettier-js-mode)
   ;; :hook (typescript-tsx-mode . eglot-ensure)
@@ -3686,58 +3689,108 @@ Spell Commands^^           Add To Dictionary^^              Other
 
 (setq lsp-zig-zls-executable "~/opt/homebrew/bin/zls")
 
-(use-package go-mode
-  :straight (:build t)
-  :defer t
-  :mode ("\\.go\\'" . go-mode)
-  :config
-  (add-hook 'before-save-hook #'gofmt-before-save))
-
+;; ///////////////////////////////////
 ;; (use-package go-mode
 ;;   :straight (:build t)
 ;;   :defer t
 ;;   :mode ("\\.go\\'" . go-mode)
-;;   :hook (go-mode . lsp-deferred)
-;;   :hook (go-mode . company-mode)
+;;   :mode ("\\.mod\\'" . go-mode)
 ;;   :config
-;;   (require 'lsp-go)
+;;   (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
 ;;   (add-hook 'before-save-hook #'gofmt-before-save))
 
-(use-package go-snippets
-  :defer t)
 
-(defun fix-messed-up-gofmt-path
-  (interactive)
-  (setq gofmt-command (string-trim (shell-command-to-string "which gofmt"))))
+;; (setq lsp-go-analyses '((shadow . t)
+;;                         (simplifycompositelit . :json-false)))
+
+;; (use-package go-snippets
+;;   :defer t)
+
+;; (defun fix-messed-up-gofmt-path
+;;     (interactive)
+;;   (setq gofmt-command (string-trim (shell-command-to-string "which gofmt"))))
+
+;; (defun my-go-mode-auto-switch ()
+;;   "Auto convert go-mode"
+;;   (when (and buffer-file-name
+;;              (string-match-p "\\.go\\'" buffer-file-name))
+;;     (go-mode)))
+
+;; (add-hook 'find-file-hook #'my-go-mode-auto-switch)
 
 ;; (lsp-register-custom-settings
 ;;  '(("gopls.completeUnimported" t t)
 ;;    ("gopls.staticcheck" t t)))
 
-(defun lsp-go-install-save-hooks ()
-  (add-hook 'before-save-hook #'lsp-format-buffer t t)
-  (add-hook 'before-save-hook #'lsp-organize-imports t t))
-(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+;; (defun lsp-go-install-save-hooks ()
+;;   (add-hook 'before-save-hook #'lsp-format-buffer t t)
+;;   (add-hook 'before-save-hook #'lsp-organize-imports t t))
+;; (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
 
-(require 'project)
+;; (require 'project)
 
-(defun project-find-go-module (dir)
-  (when-let ((root (locate-dominating-file dir "go.mod")))
-    (cons 'go-module root)))
+;; (defun project-find-go-module (dir)
+;;   (when-let ((root (locate-dominating-file dir "go.mod")))
+;;     (cons 'go-module root)))
 
-(cl-defmethod project-root ((project (head go-module)))
-  (cdr project))
+;; (cl-defmethod project-root ((project (head go-module)))
+;;    (cdr project))
+;; ///////////////////////////////////
+(eval-when-compile (require 'use-package))
+(use-package go-ts-mode
+  :ensure t
+  :mode "\\.go\\'"
+  :preface
+  (defun vd/go-lsp-start()
+    (add-hook 'before-save-hook #'lsp-format-buffer t t)
+    (add-hook 'before-save-hook #'lsp-organize-imports t t)
+    (lsp-deferred)
+    )
+  :bind
+  (:map go-ts-mode-map
+    ("C-c g b" . go-dap-setup)
+    ("C-c g h" . go-root-setup)
+    ("C-c g t" . dap-breakpoint-toggle)
+    ("C-c g a" . treesit-beginning-of-defun)
+    ("C-c g e" . treesit-end-of-defun)
+    ("C-c g i" . prog-indent-sexp)
+    ("RET"     . reindent-then-newline-and-indent)
+    ("M-RET"   . newline)
+   )
 
-(add-hook 'project-find-functions #'project-find-go-module)
+  :custom
+  (go-ts-mode-indent-offset 4)
+  :config
+  (add-to-list 'exec-path "~/.local/bin")
+  (setq lsp-go-analyses '(
+                          (nilness . t)
+                          (shadow . t)
+                          (unusedwrite . t)
+                          (fieldalignment . t)
+                          (escape . t)
+                                       )
+        lsp-go-codelenses '(
+                          (test . t)
+                          (tidy . t)
+                          (upgrade_dependency . t)
+                          (vendor . t)
+                          (gc_details . t)
+                          (run_govulncheck . t)
+                                       )
+        )
+  :hook
+  (go-ts-mode . vd/go-lsp-start)
+)
 
-;; (add-hook 'go-mode-hook 'eglot-ensure)
+;; (use-package go-tag
+;;   :ensure t
+;; )
 
-(defun eglot-format-buffer-on-save ()
-  (add-hook 'before-save-hook #'eglot-format-buffer -10 t))
-(add-hook 'go-mode-hook #'eglot-format-buffer-on-save)
+(use-package godoctor
+  :ensure t
+)
 
-;; (setq lsp-go-analyses '((shadow . t)
-;;                         (simplifycompositelit . :json-false)))
+(provide 'go-rcp)
 
 (defun my/local-tab-indent ()
   (setq-local indent-tabs-mode 1))
@@ -3776,11 +3829,7 @@ Spell Commands^^           Add To Dictionary^^              Other
   :mode "\\.yml\\'"
   :mode "\\.yaml\\'")
 
-(use-package move-mode
-  :straight (:build t :host github :repo "amnn/move-mode" :branch "main"))
-
-(add-hook 'move-mode-hook #'eglot-ensure)
-;;           (add-to-list 'eglot-server-programs '(move-mode "sui-move-analyzer"))
+(use-package move-mode :straight t)
 
 (defun my/move-lsp-project-root (dir)
   (and-let* (((boundp 'eglot-lsp-context))
@@ -3796,14 +3845,17 @@ Spell Commands^^           Add To Dictionary^^              Other
   (add-to-list 'lsp-language-id-configuration '(move-mode . "move"))
   (lsp-register-client
    (make-lsp-client
-    :new-connection (lsp-stdio-connection "sui-move-analyzer")
+    :new-connection (lsp-stdio-connection "move-analyzer")
     :activation-fn (lsp-activate-on "move")
     :priority -1
     :server-id 'move-analyzer)))
 
 (use-package eglot
- :config
- (add-to-list 'eglot-server-programs '(move-mode "sui-move-analyzer")))
+  :config
+  (add-to-list 'eglot-server-programs '(move-mode "aptos-move-analyzer"))
+  (add-to-list 'eglot-server-programs '(move-mode "sui-move-analyzer"))
+  (add-to-list 'eglot-server-programs '(move-mode "move-analyzer"))
+)
 
   (dqv/evil
     ;;:packages '(counsel)
